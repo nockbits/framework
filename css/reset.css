@@ -1,0 +1,10 @@
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,label,p,blockquote,table,th,td,embed,object,button,hr{margin:0;padding:0;}
+*:focus{ outline:0;}
+html, body { height: 100%;}
+fieldset,img,abbr{border:0;}
+ul, li {list-style:none; list-style-type:none;}
+body{background: none repeat scroll left top #FFFFFF;font-family: "Trebuchet MS", Helvetica, sans-serif;font-size: 13px; font-weight:normal;
+     color:#1F191A;text-decoration:none; }
+.hdfnt, .h2c{font-family: Verdana, Geneva, sans-serif; font-size: 20px; font-weight:bold; padding-bottom: 1px;}
+a{ color:#2b91c6; text-decoration:none;}
+a:hover{ color:#2B91C6; text-decoration:underline;}
