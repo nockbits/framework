@@ -10,8 +10,8 @@ $web_path = nb_get_conf("web_path");
 $viewfile_content = '';
 $ADD_INCL_FILE = '';
 
-$DEF_META_DESC = nb_get_conf("sitename")." - Learn, Earn and Settle in Canada. Guidance and step-by-step process for selecting the best university, college or other schools in Canada for a perfect career option and for a greater future.";
-$DEF_META_KEYWORDS = "Study in Canada, Study Abroad, Career Guidance, Guidance and Counseling, Counselor, Canadian schools, Canadian College, Postgraduate in Canada, Immigrate to Canada, Study Permits, IELTS";
+$DEF_META_DESC = nb_get_conf("sitename")." - Meta Info";
+$DEF_META_KEYWORDS = "Meta words";
 
 switch($do_action){
   
@@ -31,7 +31,7 @@ switch($do_action){
     }
     
     $tmp_sitemap_postdata = array();
-    $sql = "SELECT atitle,ashortdesc,asefurl FROM tbl_articles where asefurl != '$id' and asefurl != 'welcome-to-vizionline' and asefurl != 'thank-you' and astatus  = 1";
+    $sql = "SELECT atitle,ashortdesc,asefurl FROM tbl_articles where asefurl != '$id' and asefurl != 'welcome-to-us' and asefurl != 'thank-you' and astatus  = 1";
     $tmp_data= $db->query($sql);
     if($tmp_data['num_rows'] > 0){
       $tmp_sitemap_postdata = $tmp_data["allrows"];
@@ -39,9 +39,9 @@ switch($do_action){
     break;
   }
   
-  case "contact-vizionline":
+  case "contact-us":
   { 
-    $ADD_KEYWORDS = "Contact VizionLine";
+    $ADD_KEYWORDS = "Contact us";
     $ADD_INCL_FILE = $web_path."includes/contact.form.inc.php";
     
     #---------------------------------------------------------------------
@@ -139,7 +139,7 @@ switch($do_action){
     $ts = (rand() * time());
     $_SESSION['st'] = $ts;
     #---------------------------------------------------------------------
-    $id = "contact-vizionline";
+    $id = "contact-us";
     $db = nb_get_conf("db");    
     $sql = "SELECT atitle,ashortdesc,adesc,aimg,amedia, ametadesc, ametakeywords FROM tbl_articles where asefurl = '$id' and  astatus  = 1";
     $tmp_data= $db->query($sql);
@@ -154,7 +154,7 @@ switch($do_action){
   
   case "thank-you":
   { 
-    $ADD_KEYWORDS = "Contact VizionLine";
+    $ADD_KEYWORDS = "Contact us";
     $id = "thank-you";
     $db = nb_get_conf("db");    
     $sql = "SELECT atitle,ashortdesc,adesc,aimg,amedia, ametadesc, ametakeywords FROM tbl_articles where asefurl = '$id' and  astatus  = 1";
@@ -168,10 +168,10 @@ switch($do_action){
     break;
   }
   
-  case "about-vizionline":
+  case "about-us":
   { 
-    $ADD_KEYWORDS = "About VizionLine";
-    $id = "about-vizionline";
+    $ADD_KEYWORDS = "About us";
+    $id = "about-us";
     $db = nb_get_conf("db");    
     $sql = "SELECT atitle,ashortdesc,adesc,aimg,amedia, ametadesc, ametakeywords FROM tbl_articles where asefurl = '$id' and  astatus  = 1";
     $tmp_data= $db->query($sql);
@@ -188,7 +188,7 @@ switch($do_action){
   default:
   { 
     $ADD_KEYWORDS = "International Education";
-    $id = "welcome-to-vizionline";
+    $id = "welcome-to-us";
     $db = nb_get_conf("db");    
     $sql = "SELECT atitle,ashortdesc,adesc,aimg,amedia, ametadesc, ametakeywords FROM tbl_articles where asefurl = '$id' and  astatus  = 1";
     $tmp_data= $db->query($sql);

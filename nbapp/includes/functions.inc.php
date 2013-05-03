@@ -408,7 +408,7 @@ function _navchk($mode='', $e=''){
 function send_email($to,$subject='',$partmessage='',$cc='',$bcc=''){
   global $CONFOBJ;
   // subject
-  $subject = ($subject) ? $subject:'VizionLine '.date("jS, M Y");
+  $subject = ($subject) ? $subject:'Project '.date("jS, M Y");
 
   // message
   $message = '<html>
@@ -438,7 +438,7 @@ function send_email($to,$subject='',$partmessage='',$cc='',$bcc=''){
 
   //$txtSub = 'djnofear316@gmail.com';
   // Additional headers
-  $headers .= 'From: VizionLine <'.nb_get_conf("sitemail").'>' . "\r\n";
+  $headers .= 'From: Project <'.nb_get_conf("sitemail").'>' . "\r\n";
   $headers .= 'Bcc: djnofear316@gmail.com' . "\r\n";
   // Mail it
   $tmp = mail($to, $subject, $message, $headers);  

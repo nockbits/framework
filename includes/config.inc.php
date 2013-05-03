@@ -1,14 +1,14 @@
 <?php 
 class nbmastercontrol{}
 $NBCONFIG = new nbmastercontrol;
-$NBCONFIG->web_path = "C:/wamp/www/nockbits/www/";
+$NBCONFIG->web_path = "/home/user1/httpd/<project>";
 $NBCONFIG->base_path = $NBCONFIG->web_path."nbapp/";//Current Working dir
 $NBCONFIG->base_domain = "localhost";
 $NBCONFIG->base_url = "http://".$NBCONFIG->base_domain."/nockbits/www/";//Base URL of the website
 $NBCONFIG->admin_url = "";//Base URL of the website
-$NBCONFIG->sitename  = "VizionLine";
-$NBCONFIG->sitemail  = "query@vizionline.com";   
-$NBCONFIG->sitephoneno  = "+1&nbsp;(647)&nbsp;763-8677";
+$NBCONFIG->sitename  = "ProjectNAme";
+$NBCONFIG->sitemail  = "contact@domain.com";   
+$NBCONFIG->sitephoneno  = "1800&nbsp;1850&nbsp;0077";
 
 define("NBMASTERCHK",1);
 define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
@@ -58,10 +58,10 @@ function nb_autoloader($class) {
 spl_autoload_register('nb_autoloader');
 
 $NBCONFIG->index_file = "index.php/";
-$NBCONFIG->ck_key = "nApps";
+$NBCONFIG->ck_key = "nbSaAps";
 $NBCONFIG->ck_admin_login_key = "nbApd";
 $NBCONFIG->css_refresh_key = "201303";
-$NBCONFIG->data_sep = ".NbapS.";
+$NBCONFIG->data_sep = ".NfS.";
 
 #Create DB Connection
 $init_param = array("host" => "localhost", "username" => "root", "password" => "", "dbname" => "nockbits");

@@ -28,7 +28,7 @@
       <li><a title="DASHBOARD" class="active" href="#dashboard">DASHBOARD</a></li> <!-- Use the "active" class for the active menu item  -->
       <li><a target="_blank" title="WEBSITE" href="#website">WEBSITE</a></li>
       <li class="logout"><a title="LOGOUT" href="#logout">LOGOUT</a></li>
-      <li class="logout"><a title="Welcome user, superadmin@ibh.com" href="#logout">superadmin@ibh.com</a></li>	
+      <li class="logout"><a title="Welcome user, superadmin@ibh.com" href="#logout">superadmin@domain.com</a></li>	
     </ul>
     <!-- header end -->
     
