@@ -49,6 +49,10 @@
         <td><input type="file" name="amedia" id="atitle" class="box " /> <?php __e( ( $postdata['amedia'] && nb_get_media_file($postdata['amedia'],1)) ? "<br/>(<a href='".nb_get_media_file($postdata['amedia'])."' target='_blank'>".$postdata['amedia']."</a>)":"" );?></td>
       </tr>
       <tr>
+        <td><label for="atitle">Ref URL</label></td>
+        <td><input type="text" name="arefurl" id="arefurl" value="<?php __e( $postdata['arefurl'] );?>" class="box " /></td>
+      </tr>
+      <tr>
         <td width="12%"><label for="ashortdesc"><span class="imp">*</span> Short Description</label></td>
         <td><textarea name="ashortdesc" id="ashortdesc" class="box" rows="5"><?php __e(html_entity_decode($postdata['ashortdesc']) );?></textarea></td>
       </tr>

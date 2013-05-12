@@ -1,4 +1,4 @@
-<h3>Articles Management System (<?php __e($num_rows);?>)</h3>
+<h3>Articles Management System (<?php __e($num_rows,0);?>)</h3>
 <div align="right" class="topactionbar"><input type="submit" name="add_btn" id="add_btn" value="Add" class="button-submit" onclick="redpage('<?php __e(nb_site_url("func=articles&mode=add"));?>');" /></div>
 <br class="clearall"/>
 <?php nb_admin_info($err,$msg);?>
