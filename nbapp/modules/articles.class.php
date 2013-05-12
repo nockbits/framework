@@ -108,7 +108,8 @@ class articles{
     $update_arr['ashortdesc'] = nb_clean("ashortdesc");
     $update_arr['adesc']      = nb_clean("adesc");   
     $update_arr['ametadesc']      = nb_clean("ametadesc");   
-    $update_arr['ametakeywords']  = nb_clean("ametakeywords");   
+    $update_arr['ametakeywords']  = nb_clean("ametakeywords");
+    $update_arr['arefurl']    = nb_clean("arefurl");
     $sefurl = $this->_sef_url($update_arr['atitle']);
     $update_arr['asefurl']      = $sefurl;   
     $data['postdata'] = $update_arr;
@@ -140,7 +141,7 @@ class articles{
     if($chk == 0){
       $this->_add();
     }else{
-      $this->log_err = array();
+      
       if($_FILES["amedia"]['tmp_name'] != ''){
         $upl_status_media = nb_upload_media($_FILES["amedia"]);
         if($upl_status_media === 0){
@@ -151,7 +152,7 @@ class articles{
       }
 
       if($_FILES["aimg"]['tmp_name'] != ''){
-        $upl_status_img = nb_upload_media($_FILES["aimg"]);
+        $upl_status_img = nb_upload_media($_FILES["aimg"],array(100,150,50));
         if($upl_status_img === 0){
           $this->log_err[] = 'Please upload a valid image file (jpeg, png, gif) and max 5MB size';
           $this->_add();
@@ -167,7 +168,7 @@ class articles{
       $update_arr['adesc']      = nb_clean("adesc");   
       $update_arr['ametadesc']      = nb_clean("ametadesc");   
       $update_arr['ametakeywords']  = nb_clean("ametakeywords");
-    
+      $update_arr['arefurl']    = nb_clean("arefurl");
       $sefurl = $this->_sef_url($update_arr['atitle']);
       $update_arr['asefurl']      = $sefurl;   
       
@@ -218,6 +219,7 @@ class articles{
       $update_arr['adesc']      = nb_clean("adesc");    
       $update_arr['ametadesc']      = nb_clean("ametadesc");   
       $update_arr['ametakeywords']  = nb_clean("ametakeywords");
+      $update_arr['arefurl']    = nb_clean("arefurl");
       $sefurl = $this->_sef_url($update_arr['atitle']);
       $update_arr['asefurl']    = $sefurl;
       if($upl_status_media)

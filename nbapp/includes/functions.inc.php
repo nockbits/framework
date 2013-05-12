@@ -225,7 +225,7 @@ function nb_fck($k='', $v='',$w='750',$h='500'){
 # Function: nb_fck END
 
 # Function: nb_upload_media START
-function nb_upload_media($s=''){
+function nb_upload_media($s='',$resize=array()){
   $upload_source    = $s["tmp_name"];
   $upload_filename  = $s["name"];
   $upload_filetype  = $s["type"];
@@ -233,12 +233,12 @@ function nb_upload_media($s=''){
   $upload_error     = $s["error"];
   
   $tmp_pathinfo = pathinfo($upload_filename);
-  $ext = $tmp_pathinfo["extension"];
+  $ext = strtolower($tmp_pathinfo["extension"]);
   $media_path = nb_get_conf("web_path");
   $upload_filename = strtolower(preg_replace("#[^a-z0-9-]#i", "_", $tmp_pathinfo["filename"]));
   $new_filename = "nb_".($upload_filename)."_".time()."_".date("jSMY").".".$ext;
   $destination = $media_path."media/".$new_filename;
-
+  
   if($upload_filesize <= 0){
     __log(__CLASS__." filesize is 0, file upload issue");
     return 0;
@@ -249,6 +249,25 @@ function nb_upload_media($s=''){
     return 0;
   }else{
     __log(__CLASS__." file upload success : ".$destination);
+    
+    if(is_array($resize)){
+      foreach ($resize as $key => $resize_val) {
+        $tmp_img_ar = array("jpg","jpeg","gif","png","tiff");
+        $resize_val = (int) $resize_val;
+        if(in_array($ext, $tmp_img_ar) && $resize_val > 10){
+          $new_filename_thumb = "nb_".($upload_filename)."_".time()."_".date("jSMY")."_thumb$resize_val.".$ext;
+          $destination_thumb = $media_path."media/".$new_filename_thumb;
+          // *** 1) Initialise / load image
+          $resizeObj = new resize($destination);
+          // *** 2) Resize image (options: exact, portrait, landscape, auto, crop)
+          $resizeObj -> resizeImage($resize_val, $resize_val, 'portrait');
+          // *** 3) Save image
+          $resizeObj -> saveImage($destination_thumb, 100);
+        } 
+      }
+    }
+    
+
     return $new_filename;
   } 
 
