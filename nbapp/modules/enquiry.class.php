@@ -94,6 +94,7 @@ class enquiry{
     $tmp_data = $db->allrecords("tbl_enquiry",$tmp_where);
     $data['postdata'] = $tmp_data["allrows"];
     $data['extravars']["num_rows"] = $tmp_data["num_rows"];
+    $data['extravars']["total_pages"] = $tmp_total_pages;
     $data['extravars']["pager"] = $tmp_pager;
 		$this->_display($this->view_prefix."_list",$data);
 	}

@@ -2,8 +2,9 @@
 
 <h3>Admin Management System :: Login</h3>
 <br class="clearall"/>
-<form name="frmLogin" id="frmLogin" action="<?php __e(nb_site_url("func=login"));?>" method="post">
-  <input type="hidden" name="mode" id="mode" value="check" /> 
+<form name="frmLogin" id="frmLogin" action="#" method="post" onsubmit="return nbapp.modLogin.validate();">
+  <input type="hidden" name="mode" id="mode" value="check" />
+  
   <input type="hidden" name="t" id="t" value="<?php __e(time());?>" />
   <?php nb_admin_info($err,$msg);?>
 

@@ -18,9 +18,30 @@
   <link  href="favicon.ico" rel="shortcut icon" type="image/ico" />
   <!-- /CSS -->
 
-  <script type="text/javascript" lang="javascript" src="<?php __e(nb_base_url());?>js/nbmain.js"></script>
+  <script type="text/javascript" lang="javascript" src="<?php __e(nb_base_url());?>js/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" lang="javascript" src="<?php __e(nb_base_url());?>js/json2.js"></script>
+  <script type="text/javascript" lang="javascript" src="<?php __e(nb_base_url());?>js/app.js"></script>
+  <script type="text/javascript" lang="javascript" src="<?php __e(nb_base_url());?>js/jquery.iframe-post-form.js"></script>
+  <script type="text/javascript" lang="javascript">
+    nbapp.conf.baseurl = "<?php __e(nb_base_url());?>";
+  </script>
 	</head>
 <body>
+	
+	<!--<div class="modal-backdrop">
+		<div class="modal">
+			<div class="modal-header">Title</div>
+			<div class="modal-body screenboxcont">Body</div>
+			<div class="modal-footer">Footer</div>
+		</div>
+	</div>
+	-->
+  <div id="lightbox">
+    <p><a onclick="nbapp.functions.ajxClearMsgBox();" href="#">Click to close</a></p>
+    <div id="content">
+      <div class="screenboxcont"></div>
+    </div>
+  </div>
   
   <!-- bodywrap start -->
   <div id="bodywrap">
@@ -31,7 +52,7 @@
       <li><a title="DASHBOARD" class="active" href="#dashboard">DASHBOARD</a></li> <!-- Use the "active" class for the active menu item  -->
       <li><a target="_blank" title="WEBSITE" href="<?php __e(nb_get_conf("base_url"));?>">WEBSITE</a></li>
       <?php if($usrname=nb_get_cok(__sessionkey("login"))){ ?>
-      <li class="logout"><a title="LOGOUT" href="<?php __e(nb_site_url('func=login&mode=logout'));?>">LOGOUT</a></li>
+      <li class="logout"><a title="LOGOUT" href="<?php __e(nb_site_url('func=logout&mode=logout'));?>">LOGOUT</a></li>
       <li class="logout"><a title="Welcome user, <?php __e($usrname); ?>" href="#logout"><?php __e($usrname); ?></a></li>	
       <?php }else{ ?>
       <li class="logout"><a title="Welcome Guest" href="<?php __e(nb_site_url('func=login'));?>"><?php __e("Guest"); ?></a></li>	  
@@ -45,9 +66,23 @@
       <?php if($usrname){ ?>
       <div id="sidebar">
         <ul class="sidenav">
-           <li><a href="<?php __e(nb_site_url('func=articles&mode=list'));?>">Articles</a></li>
-           <li><a href="<?php __e(nb_site_url('func=enquiry&mode=list'));?>">Enquiries</a></li>
-           <li><a href="#">Editors</a></li>
+           <li><a href="<?php __e(nb_site_url('func=articles&mode=list'));?>"><span class="icon-chevron-right"></span>Articles</a></li>
+           <li><a href="<?php __e(nb_site_url('func=enquiry&mode=list'));?>"><span class="icon-chevron-right"></span>Enquiries</a></li>
+           <li>
+						<a href="javascript:void(0);" onclick="nbapp.sideNav.open(this);"><span class="icon-plus-sign"></span>Subscribers</a>
+						<ul class="sidenavsub">
+							<li><a href="<?php __e(nb_site_url('func=subscriber&mode=list'));?>"><span class="icon-chevron-right"></span>List</a><li>
+							<li><a href="<?php __e(nb_site_url('func=subscriber&mode=bulkimport'));?>"><span class="icon-chevron-right"></span>Bulk Import</a><li>
+						</ul>
+					 </li>
+
+					 <li>
+						<a href="javascript:void(0);" onclick="nbapp.sideNav.open(this);"><span class="icon-plus-sign"></span>Gallery</a>
+						<ul class="sidenavsub">
+							<li><a href="<?php __e(nb_site_url('func=gallery&mode=list'));?>"><span class="icon-chevron-right"></span>List</a><li>
+							<li><a href="<?php __e(nb_site_url('func=gallery&mode=add'));?>"><span class="icon-chevron-right"></span>Add</a><li>
+						</ul>
+					 </li>
         </ul>  
       </div>
       <?php } ?>

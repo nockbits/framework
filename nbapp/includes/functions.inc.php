@@ -67,7 +67,7 @@ function nb_is_admin_loggedin()
 function nb_set_cok($k,$v,$exp=0,$secure=0)
 {
 	$exp = ($exp) ? $exp:(time()+3600);
-	setcookie($k, $v, $exp, "/", CK_DOMAIN, $secure);
+	setcookie($k, base64_encode($v), $exp, "/", CK_DOMAIN, $secure);
 	return 1;
 }
 # Function: nb_set_cok END
@@ -75,7 +75,7 @@ function nb_set_cok($k,$v,$exp=0,$secure=0)
 # Function: nb_get_cok START
 function nb_get_cok($k)
 {
-	return (isset($_COOKIE[$k])) ? $_COOKIE[$k] : false;
+	return (isset($_COOKIE[$k])) ? base64_decode($_COOKIE[$k]) : false;
 }
 # Function: nb_get_cok END
 
@@ -160,6 +160,29 @@ function nb_admin_display($view='',$data=array(),$ajax=0){
 }
 # Function: nb_admin_display END
 
+
+# Function: nb_admin_error_page_display START
+function nb_admin_error_page_display($data=array(),$error=404){
+	$base = nb_get_conf("base_path");
+	$viewfile = $base."views/web_general_error.php";
+	if(is_file($viewfile)){
+		$postdata = (isset($data['postdata'])) ? $data['postdata']:array();
+		$err = (isset($data['err'])) ? $data['err']:array();
+		$msg = (isset($data['msg'])) ? $data['msg']:array();
+    if(isset($data['extravars'])){
+      extract($data['extravars']);
+    }
+		if($ajax){
+			include_once($viewfile);
+		}else{
+			include_once($base."views/web_header.php");
+			include_once($viewfile);
+			include_once($base."views/web_footer.php");
+		}
+	}
+}
+# Function: nb_admin_error_page_display END 
+
 # Function: nb_admin_info START
 function nb_admin_info($err='',$msg='',$ajax=0){
 	$base = nb_get_conf("base_path");
@@ -236,7 +259,8 @@ function nb_upload_media($s='',$resize=array()){
   $ext = strtolower($tmp_pathinfo["extension"]);
   $media_path = nb_get_conf("web_path");
   $upload_filename = strtolower(preg_replace("#[^a-z0-9-]#i", "_", $tmp_pathinfo["filename"]));
-  $new_filename = "nb_".($upload_filename)."_".time()."_".date("jSMY").".".$ext;
+  $new_filename_spcl = "nb_".($upload_filename)."_".time()."_".date("jSMY");
+  $new_filename = $new_filename_spcl.".".$ext;
   $destination = $media_path."media/".$new_filename;
   
   if($upload_filesize <= 0){
@@ -251,16 +275,16 @@ function nb_upload_media($s='',$resize=array()){
     __log(__CLASS__." file upload success : ".$destination);
     
     if(is_array($resize)){
-      foreach ($resize as $key => $resize_val) {
+      foreach ($resize as $resize_key => $resize_val) {
         $tmp_img_ar = array("jpg","jpeg","gif","png","tiff");
         $resize_val = (int) $resize_val;
         if(in_array($ext, $tmp_img_ar) && $resize_val > 10){
-          $new_filename_thumb = "nb_".($upload_filename)."_".time()."_".date("jSMY")."_thumb$resize_val.".$ext;
+          $new_filename_thumb = $new_filename_spcl."_$resize_key.".$ext;
           $destination_thumb = $media_path."media/".$new_filename_thumb;
           // *** 1) Initialise / load image
           $resizeObj = new resize($destination);
           // *** 2) Resize image (options: exact, portrait, landscape, auto, crop)
-          $resizeObj -> resizeImage($resize_val, $resize_val, 'portrait');
+          $resizeObj -> resizeImage($resize_val, $resize_val, 'auto');
           // *** 3) Save image
           $resizeObj -> saveImage($destination_thumb, 100);
         } 
@@ -291,6 +315,19 @@ function nb_get_media_file($f='',$abs=0,$ret=0){
     $media_path = nb_get_conf("base_url");
     $destination = $media_path."media/".$f;
     return $destination;
+  }
+  return 0;
+}
+# Function: nb_get_media_file END
+
+# Function: nb_get_media_file START
+function nb_get_image_file($f='',$size="tiny"){
+  $tmp_img_chk = nb_get_media_file($f,1);
+  if($tmp_img_chk){
+    $tmp_img = nb_get_media_file($f);
+    $tmp_aimg = pathinfo($tmp_img);  
+    $tmp_file_img = $tmp_aimg["dirname"]."/".$tmp_aimg["filename"]."_".$size.".".$tmp_aimg["extension"];
+    return $tmp_file_img;
   }
   return 0;
 }
@@ -417,6 +454,14 @@ function nb_pager($total_pages = 0, $link=""){
 	
 }
 # Function: nb_pager END
+
+
+# Function: nb_json_output START
+//App Functions
+function nb_json_output($s=array()){
+  echo json_encode($s);die();
+}
+# Function: nb_json_output END
 
 #-------------------------------------------------------------------------------
 //App Functions

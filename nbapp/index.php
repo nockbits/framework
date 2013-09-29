@@ -7,10 +7,10 @@ set_time_limit(0);
  */
 class nbmastercontrol{}
 $NBCONFIG = new nbmastercontrol;
-$NBCONFIG->web_path = "/www/nockbits/www/";
+$NBCONFIG->web_path = "C:/wamp/www/nockbits/main/";
 $NBCONFIG->base_path = $NBCONFIG->web_path."nbapp/";//Current Working dir
 $NBCONFIG->base_domain = "localhost";
-$NBCONFIG->base_url = "http://".$NBCONFIG->base_domain."/nockbits/www/";//Base URL of the website
+$NBCONFIG->base_url = "http://".$NBCONFIG->base_domain."/nockbits/main/";//Base URL of the website
 $NBCONFIG->admin_url = $NBCONFIG->base_url."nbapp/";//Base URL of the website
 
 define("NBMASTERCHK",1);

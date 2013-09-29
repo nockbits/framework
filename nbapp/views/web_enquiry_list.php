@@ -1,4 +1,4 @@
-<h3>Enquiry Management System (<?php __e($num_rows);?>)</h3>
+<h3>Enquiry Management System (<?php __e($total_pages,0);?>)</h3>
 <!-- <div align="right" class="topactionbar"></div> -->
 <br class="clearall"/>
 <?php nb_admin_info($err,$msg);?>
@@ -31,7 +31,7 @@
         <td align="left" valign="top"><?php __e($val['enphone'], '-');?> </td>
         <td align="left" valign="top"><?php __e( (($val['astatus']) ? "Active":"Inactive") );?></td>
         <td align="left" valign="top">
-          <a class="d" href="javascript:;" onclick="confDelete('<?php __e(nb_site_url("func=enquiry&mode=delete&id=".$val['id']) );?>');">Delete</a> | 
+          <a class="d" href="javascript:;" onclick="nbapp.functions.confDelete('<?php __e(nb_site_url("func=enquiry&mode=delete&id=".$val['id']) );?>');">Delete</a> | 
           <a class="p" href="<?php __e(nb_site_url("func=enquiry&mode=preview&id=".$val['id']) );?>">Preview</a>
         </td>
       </tr>      

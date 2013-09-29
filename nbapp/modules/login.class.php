@@ -12,11 +12,13 @@ class login{
 
 	var	$log_err = array();
 	var $post_data = array();
+  var $ajax_mode = "";
 	
 	function login($params=array()){
 		### DEFAULT VALUES - START ###
 		$this->post_data['txtUsername'] = nb_clean("txtUsername");
 		$this->post_data['txtPassword'] = nb_clean("txtPassword");	
+    $this->ajax_mode = nb_clean("ajaxmode");
 		### DEFAULT VALUES - END ###
 	}
 	
@@ -48,10 +50,12 @@ class login{
 			return 'login';
 		}
 		
+    
     $db = nb_get_conf("db");
     $sql = "SELECT id FROM tbl_admin where 
             adusername = '".($this->post_data['txtUsername'])."' 
             AND adpassword = '".md5($this->post_data['txtPassword'])."'";
+    
     $tmp_data= $db->query($sql);
     if($tmp_data['num_rows'] > 0){
 			$sep = nb_get_conf("data_sep");
@@ -60,10 +64,26 @@ class login{
 			nb_set_cok(__sessionkey("login_more"),$admin_val,$exp);
 			nb_set_cok(__sessionkey("login"),$this->post_data['txtUsername'],$exp);      
       __log("Login - ".__sessionkey("login_more"). "\t" .$admin_val);      
-      nb_redirect("func=dashboard");	exit;
+      if($this->ajax_mode == 1){
+        $tmp_ar = array();
+        $tmp_ar[nb_get_conf("ajax_id")]["status"] = "Success";
+        $tmp_ar[nb_get_conf("ajax_id")]["redurl"] = "index.php?func=dashboard";
+        nb_json_output($tmp_ar);
+      }else {
+        nb_redirect("func=dashboard");	exit;
+      }
+      
 			return 'success';
 		}else{
-      $this->log_err[] = "Invalid Login.";
+      if($this->ajax_mode == 1){
+        $tmp_ar = array();
+        $tmp_ar[nb_get_conf("ajax_id")]["status"] = "Failure";
+        $tmp_ar[nb_get_conf("ajax_id")]["redurl"] = "";
+        nb_json_output($tmp_ar);
+      }else{
+        $this->log_err[] = "Invalid Login.";  
+      }
+      
       return 'login';
     }
 	}
@@ -82,7 +102,7 @@ class login{
     $exp = (time()-3600);
     __log("Logout - ".nb_get_cok(__sessionkey("login_more")));
     
-    nb_set_cok(__sessionkey("login_more"),"",$exp);
+		nb_set_cok(__sessionkey("login_more"),"",$exp);
 		nb_set_cok(__sessionkey("login"),"",$exp);
     nb_redirect("func=login");	exit;
 		return 'success';		

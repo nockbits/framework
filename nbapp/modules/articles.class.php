@@ -14,10 +14,14 @@ class articles{
 	var	$log_err = array();
   var	$log_msg = array();
 	var $post_data = array();
+  var $post_img_resize = array();
+  var $ajax_mode = "";
 	
 	# Function: Constructor START #
 	function articles($params=array()){
 		### DEFAULT VALUES - START 	###
+    $this->post_img_resize = array("large" => 640, "medium" => 150, "small" => 100, "tiny" => 50);
+    $this->ajax_mode = nb_clean("ajaxmode");
 		### DEFAULT VALUES - END 	###
 	}
 	# Function: Constructor END #
@@ -93,6 +97,7 @@ class articles{
     $tmp_data = $db->allrecords("tbl_articles",$tmp_where);
     $data['postdata'] = $tmp_data["allrows"];
     $data['extravars']["num_rows"] = $tmp_data["num_rows"];
+    $data['extravars']["total_pages"] = $tmp_total_pages;
     $data['extravars']["pager"] = $tmp_pager;
 		$this->_display($this->view_prefix."_list",$data);
 	}
@@ -110,6 +115,9 @@ class articles{
     $update_arr['ametadesc']      = nb_clean("ametadesc");   
     $update_arr['ametakeywords']  = nb_clean("ametakeywords");
     $update_arr['arefurl']    = nb_clean("arefurl");
+    $update_arr['atags']    = nb_clean("atags");
+    $update_arr['apostedby']    = nb_clean("apostedby");
+    $update_arr['avideourl']    = nb_clean("avideourl");
     $sefurl = $this->_sef_url($update_arr['atitle']);
     $update_arr['asefurl']      = $sefurl;   
     $data['postdata'] = $update_arr;
@@ -136,30 +144,15 @@ class articles{
 
 	# Function: _insert START #
 	function _insert(){
-    
-    $chk  = $this->_validate();    
+    $tmp_ar = array();
+		$chk  = $this->_validate();    
+        
     if($chk == 0){
-      $this->_add();
+      $tmp_ar[nb_get_conf("ajax_id")]["status"] = "Error";
+			$tmp_ar[nb_get_conf("ajax_id")]["msg"] = implode("<br>",$this->log_err);
+			nb_json_output($tmp_ar);
+			exit;
     }else{
-      
-      if($_FILES["amedia"]['tmp_name'] != ''){
-        $upl_status_media = nb_upload_media($_FILES["amedia"]);
-        if($upl_status_media === 0){
-          $this->log_err[] = 'Please upload a valid media file (pdf, doc, excel) and max 5MB size';
-          $this->_add();
-          return "add";
-        }
-      }
-
-      if($_FILES["aimg"]['tmp_name'] != ''){
-        $upl_status_img = nb_upload_media($_FILES["aimg"],array(100,150,50));
-        if($upl_status_img === 0){
-          $this->log_err[] = 'Please upload a valid image file (jpeg, png, gif) and max 5MB size';
-          $this->_add();
-          return "add";
-        }
-      }
-      
       $db         = nb_get_conf("db");   
       $update_arr = array();
       $update_arr['astatus']    = (nb_clean("astatus")) ? 1:0;
@@ -169,19 +162,24 @@ class articles{
       $update_arr['ametadesc']      = nb_clean("ametadesc");   
       $update_arr['ametakeywords']  = nb_clean("ametakeywords");
       $update_arr['arefurl']    = nb_clean("arefurl");
+      $update_arr['atags']    = nb_clean("atags");
+      $update_arr['apostedby']    = nb_clean("apostedby");
+      $update_arr['avideourl']    = nb_clean("avideourl");
       $sefurl = $this->_sef_url($update_arr['atitle']);
       $update_arr['asefurl']      = $sefurl;   
       
-      if($upl_status_media)
-        $update_arr['amedia']     = $upl_status_media;
-      
-      if($upl_status_img)
-        $update_arr['aimg']       = $upl_status_img;
+      $update_arr['amedia']     = nb_clean("amedia");
+      $update_arr['aimg']       = nb_clean("aimg");
       
       $sql_ins_val = $db->_bulk_insert(array($update_arr));
       $qry = "INSERT INTO tbl_articles $sql_ins_val";
       $id = $db->insert($qry,1);
-      nb_redirect("func=articles");    
+      
+			$tmp_ar[nb_get_conf("ajax_id")]["status"] = "Success";
+			$tmp_ar[nb_get_conf("ajax_id")]["msg"] = 'Contratulations, your article is added successfully.';
+			$tmp_ar[nb_get_conf("ajax_id")]["redurl"] = nb_site_url("func=articles");
+			nb_json_output($tmp_ar);
+			exit;
     }
 	}
 	# Function: _insert END #
@@ -195,22 +193,7 @@ class articles{
     }else{
       $id = (int) nb_clean("id");
       $this->log_err = array();
-      if($_FILES["amedia"]['tmp_name'] != ''){
-        $upl_status_media = nb_upload_media($_FILES["amedia"]);
-        if($upl_status_media === 0){
-          $this->log_err[] = 'Please upload a valid media file (pdf, doc, excel)';
-          $this->_edit();
-        }
-      }
-      
-      if($_FILES["aimg"]['tmp_name'] != ''){
-        $upl_status_img = nb_upload_media($_FILES["aimg"]);
-        if($upl_status_img === 0){
-          $this->log_err[] = 'Please upload a valid image file (jpeg, png, gif)';
-          $this->_edit();
-        }
-      }
-
+ 
       $db         = nb_get_conf("db");   
       $update_arr = array();
       $update_arr['astatus']    = (nb_clean("astatus")) ? 1:0;
@@ -220,11 +203,17 @@ class articles{
       $update_arr['ametadesc']      = nb_clean("ametadesc");   
       $update_arr['ametakeywords']  = nb_clean("ametakeywords");
       $update_arr['arefurl']    = nb_clean("arefurl");
+      $update_arr['atags']    = nb_clean("atags");
+      $update_arr['apostedby']    = nb_clean("apostedby");
+      $update_arr['avideourl']    = nb_clean("avideourl");
       $sefurl = $this->_sef_url($update_arr['atitle']);
       $update_arr['asefurl']    = $sefurl;
+      
+      $upl_status_media = nb_clean("amedia");
       if($upl_status_media)
         $update_arr['amedia']     = $upl_status_media;
       
+      $upl_status_img = nb_clean("aimg");
       if($upl_status_img)
         $update_arr['aimg']       = $upl_status_img;
 
@@ -232,8 +221,11 @@ class articles{
       $qry = "UPDATE tbl_articles SET $sql_upd_val WHERE id = $id";
       $db->query($qry,1);
 
-      $this->log_msg[] = 'Record updated successfully';
-      $this->_edit();
+			$tmp_ar[nb_get_conf("ajax_id")]["status"] = "Success";
+			$tmp_ar[nb_get_conf("ajax_id")]["msg"] = 'Record updated successfully';
+			$tmp_ar[nb_get_conf("ajax_id")]["redurl"] = nb_site_url("func=articles");
+			nb_json_output($tmp_ar);
+			exit;
     }
 	}
 	# Function: _update END #
@@ -246,15 +238,25 @@ class articles{
     $tmp_data= $db->query($sql);
     if($tmp_data['num_rows'] > 0){
       $tmp_postdata = $tmp_data["allrows"][0];
-      
+     
       $tmp_img = nb_get_media_file($tmp_postdata['aimg'],1,1);
+      $tmp_aimg = pathinfo($tmp_img);     
       if(nb_get_media_file($tmp_postdata['aimg'],1)){
         @unlink($tmp_img);
+        __log(__LINE__. " \t [ARTICLES] \t [UNLINK_IMG] \t $tmp_img");
+       
+        foreach($this->post_img_resize as $tmp_rez_key => $tmpval){
+          $tmp_other_img_path = $tmp_aimg["dirname"]."/".$tmp_aimg["filename"]."_".$tmp_rez_key.".".$tmp_aimg["extension"];
+          @unlink($tmp_other_img_path);
+          __log(__LINE__. " \t [ARTICLES] \t [UNLINK_IMG] \t $tmp_other_img_path");
+        }
+        
       }
       
       $tmp_amedia = nb_get_media_file($tmp_postdata['amedia'],1,1);
       if(nb_get_media_file($tmp_postdata['amedia'],1)){
         @unlink($tmp_amedia);
+        __log(__LINE__. " \t [ARTICLES] \t [UNLINK_MEDIA] \t $tmp_amedia");
       }
       
       $sql = "UPDATE tbl_articles SET astatus=-1 WHERE id = $id";

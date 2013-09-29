@@ -39,15 +39,19 @@ class db_driver{
 	
 	function connect(){
 		$set_port = ($this->port) ? ":".$this->port:"";
- 		$this->con_res = mysql_connect($this->host.$set_port, $this->username, $this->password);
+ 		$this->con_res = @mysql_connect($this->host.$set_port, $this->username, $this->password);
 		if (!$this->con_res) {
-			$this->_log('DB Not connected : ' . mysql_error());
+      $err = 'DB Not connected : ' . mysql_error();
+			$this->_log($msg);
+      nb_admin_error_page_display(array("err" => $err), "MYSQL Error");
 			die();
 		}
 
-		$db_selected = mysql_select_db($this->dbname, $this->con_res);
+		$db_selected = @mysql_select_db($this->dbname, $this->con_res);
 		if (!$db_selected) {
-			$this->_log('Can\'t use DB : ' . mysql_error());
+      $err = 'Can\'t use DB : ' . mysql_error();
+			$this->_log($err);
+      nb_admin_error_page_display(array("err" => $err), "MYSQL Error");
 			die();
 		}
 		
